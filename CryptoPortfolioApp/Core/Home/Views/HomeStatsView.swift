@@ -10,13 +10,25 @@ import SwiftUI
 struct HomeStatsView: View {
     @Binding var showPortfolio: Bool
     @EnvironmentObject var vm: HomeViewModel
-  
+
     var body: some View {
         HStack {
-            ForEach(vm.statistics) { statistic in
-                StatisticView(statistic: statistic)
-                    .frame(width: UIScreen.main.bounds.width / 3)
+            HStack(alignment: .center) {
+                ForEach(vm.statistics[0 ... 2]) { statistic in
+                    Spacer()
+                    StatisticView(statistic: statistic)
+                    Spacer()
+                }
             }
+            .frame(width: UIScreen.main.bounds.width)
+            HStack {
+                ForEach(vm.statistics[3 ... 5]) { statistic in
+                    Spacer()
+                    StatisticView(statistic: statistic)
+                    Spacer()
+                }
+            }
+            .frame(width: UIScreen.main.bounds.width)
         }
         .frame(width: UIScreen.main.bounds.width, alignment: showPortfolio ? .trailing : .leading)
         .transition(.move(edge: .leading))
