@@ -17,8 +17,11 @@ class DeveloperPreview {
     static let instance = DeveloperPreview()
 
     private init() { }
-    
+
     let homeVM = HomeViewModel()
+
+    let statisticWithPercentage = Statistic(title: "Market Cap", value: "$12.5Bn", percentageChange: 25.34)
+    let statisticWithoutPercentage = Statistic(title: "Total Volume", value: "$1.23Tr")
 
     let coin = Coin(
         id: "bitcoin",

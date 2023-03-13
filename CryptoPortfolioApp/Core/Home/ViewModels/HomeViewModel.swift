@@ -11,8 +11,15 @@ import Foundation
 final class HomeViewModel: ObservableObject {
     @Published var allCoins: [Coin] = []
     @Published var portfolioCoins: [Coin] = []
-
     @Published var searchText: String = ""
+    @Published var statistics: [Statistic] = [
+        Statistic(title: "Title", value: "value"),
+        Statistic(title: "Title2", value: "value", percentageChange: 25),
+        Statistic(title: "Title3", value: "value", percentageChange: -2),
+        Statistic(title: "Portfolio", value: "value"),
+        Statistic(title: "Portfolio2", value: "value", percentageChange: 25),
+        Statistic(title: "Portfolio3", value: "value", percentageChange: -2),
+    ]
 
     private let dataService = CoinDataService()
     private var cancellables = Set<AnyCancellable>()
