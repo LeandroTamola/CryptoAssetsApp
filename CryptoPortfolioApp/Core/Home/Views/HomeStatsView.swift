@@ -14,21 +14,21 @@ struct HomeStatsView: View {
     var body: some View {
         HStack {
             HStack(alignment: .center) {
-                ForEach(vm.statistics[0 ... 2]) { statistic in
+                ForEach(vm.statistics) { statistic in
                     Spacer()
                     StatisticView(statistic: statistic)
                     Spacer()
                 }
             }
             .frame(width: UIScreen.main.bounds.width)
-            HStack {
-                ForEach(vm.statistics[3 ... 5]) { statistic in
-                    Spacer()
-                    StatisticView(statistic: statistic)
-                    Spacer()
-                }
-            }
-            .frame(width: UIScreen.main.bounds.width)
+//            HStack {
+//                ForEach(vm.statistics[3 ... 5]) { statistic in
+//                    Spacer()
+//                    StatisticView(statistic: statistic)
+//                    Spacer()
+//                }
+//            }
+//            .frame(width: UIScreen.main.bounds.width)
         }
         .frame(width: UIScreen.main.bounds.width, alignment: showPortfolio ? .trailing : .leading)
         .transition(.move(edge: .leading))

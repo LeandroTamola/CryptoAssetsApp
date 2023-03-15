@@ -12,16 +12,10 @@ final class HomeViewModel: ObservableObject {
     @Published var allCoins: [Coin] = []
     @Published var portfolioCoins: [Coin] = []
     @Published var searchText: String = ""
-    @Published var statistics: [Statistic] = [
-        Statistic(title: "Title", value: "value"),
-        Statistic(title: "Title2", value: "value", percentageChange: 25),
-        Statistic(title: "Title3", value: "value", percentageChange: -2),
-        Statistic(title: "Portfolio", value: "value"),
-        Statistic(title: "Portfolio2", value: "value", percentageChange: 25),
-        Statistic(title: "Portfolio3", value: "value", percentageChange: -2),
-    ]
+    @Published var statistics: [Statistic] = []
 
-    private let dataService = CoinDataService()
+    private let coinDataService = CoinDataService()
+    private let marketDataService = MarketDataService()
     private var cancellables = Set<AnyCancellable>()
 
     init() {
@@ -30,13 +24,34 @@ final class HomeViewModel: ObservableObject {
 
     private func addSubscribers() {
         $searchText
-            .combineLatest(dataService.$allCoins)
+            .combineLatest(coinDataService.$allCoins)
             .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
             .map(filterCoins)
             .sink { [weak self] returnedFilteredCoins in
                 self?.allCoins = returnedFilteredCoins
             }
             .store(in: &cancellables)
+
+        marketDataService.$marketData
+            .map(convertMarketDataIntoStatistics)
+            .sink { [weak self] returnedStats in
+                self?.statistics = returnedStats
+            }
+            .store(in: &cancellables)
+    }
+
+    private func convertMarketDataIntoStatistics(marketData: MarketData?) -> [Statistic] {
+        var stats: [Statistic] = []
+
+        guard let data = marketData else { return stats }
+
+        let marketCap = Statistic(title: "Market Cap", value: data.marketCap, percentageChange: data.marketCapChangePercentage24HUsd)
+        let volume = Statistic(title: "24h Volume", value: data.volume)
+        let btcDominance = Statistic(title: "BTC Dominance", value: data.btcDominance)
+
+        stats.append(contentsOf: [marketCap, volume, btcDominance])
+
+        return stats
     }
 
     private func filterCoins(text: String, coins: [Coin]) -> [Coin] {
