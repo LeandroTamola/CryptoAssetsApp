@@ -34,6 +34,11 @@ struct PortfolioView: View {
                     trailingNavBarButtons
                 }
             }
+            .onChange(of: vm.searchText) { newValue in
+                if newValue == "" {
+                    removeSelectedCoin()
+                }
+            }
         }
     }
 }
@@ -49,14 +54,13 @@ extension PortfolioView {
     private var coinLogoList: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack(spacing: 10) {
-                ForEach(vm.allCoins) { coin in
+                ForEach(vm.searchText.isEmpty ? vm.portfolioCoins : vm.allCoins) { coin in
                     CoinLogoView(coin: coin)
                         .frame(width: 75)
                         .padding(4)
                         .onTapGesture {
                             withAnimation(.easeIn) {
-                                selectedCoin = coin
-                                quantityText = ""
+                                updateSelectedCoin(coin: coin)
                             }
                         }
                         .background(
@@ -102,29 +106,46 @@ extension PortfolioView {
             Image(systemName: "checkmark")
                 .opacity(showCheckmark ? 1.0 : 0.0)
             Button("Save".uppercased()) {
+                saveButtonPresed()
             }.opacity(
                 (selectedCoin != nil && selectedCoin?.currentHoldings != Double(quantityText)) ? 1.0 : 0.0
             )
         }
         .font(.headline)
     }
-    
+
     private func saveButtonPresed() {
-        guard let coin = selectedCoin else { return }
-        
-        withAnimation(.easeIn){
+        guard
+            let coin = selectedCoin,
+            let amount = Double(quantityText)
+        else { return }
+
+        vm.updatePortfolio(coin: coin, amount: amount)
+
+        withAnimation(.easeIn) {
             showCheckmark = true
             removeSelectedCoin()
         }
         UIApplication.shared.endEditing()
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2){
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             withAnimation(.easeOut) {
                 showCheckmark = false
             }
         }
     }
-    
+
+    private func updateSelectedCoin(coin: Coin) {
+        selectedCoin = coin
+        if
+            let portfolioCoin = vm.portfolioCoins.first(where: { $0.id == coin.id }),
+            let amount = portfolioCoin.currentHoldings {
+            quantityText = "\(amount)"
+        } else {
+            quantityText = ""
+        }
+    }
+
     private func removeSelectedCoin() {
         selectedCoin = nil
         vm.searchText = ""
