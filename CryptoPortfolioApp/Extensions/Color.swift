@@ -11,8 +11,6 @@ extension Color {
     static let theme = ColorTheme()
 }
 
-
-
 struct ColorTheme {
     let accent = Color("AccentColor")
     let background = Color("BackgroundColor")
@@ -20,4 +18,3 @@ struct ColorTheme {
     let red = Color("RedColor")
     let secondaryText = Color("SecondaryTextColor")
 }
-

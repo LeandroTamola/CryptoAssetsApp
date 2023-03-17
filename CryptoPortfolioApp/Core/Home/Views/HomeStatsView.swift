@@ -12,11 +12,13 @@ struct HomeStatsView: View {
     @EnvironmentObject var vm: HomeViewModel
 
     var body: some View {
-        HStack(alignment: .center) {
-            ForEach(vm.statistics) { statistic in
-                Spacer()
-                StatisticView(statistic: statistic)
-                Spacer()
+        ScrollView(.horizontal) {
+            HStack(alignment: .center) {
+                ForEach(vm.statistics) { statistic in
+                    Spacer()
+                    StatisticView(statistic: statistic)
+                    Spacer()
+                }
             }
         }
         .frame(width: UIScreen.main.bounds.width, alignment: showPortfolio ? .trailing : .leading)

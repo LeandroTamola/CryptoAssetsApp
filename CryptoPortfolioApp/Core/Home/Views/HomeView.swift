@@ -24,9 +24,14 @@ struct HomeView: View {
 
                 columnTitles
 
+                if vm.isLoading {
+                    ProgressView()
+                }
+
                 if !showPortfolio {
                     allCoinsList
                         .transition(.move(edge: .leading))
+                        .refreshable { vm.reloadData() }
                 }
                 if showPortfolio {
                     portfolioCoinsList
