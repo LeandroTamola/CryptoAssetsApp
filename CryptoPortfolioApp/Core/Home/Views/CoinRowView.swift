@@ -21,6 +21,10 @@ struct CoinRowView: View {
             priceColumn
         }
         .font(.subheadline)
+        .background(
+            Rectangle()
+                .foregroundColor(.theme.background)
+        )
     }
 }
 

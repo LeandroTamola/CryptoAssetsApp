@@ -11,6 +11,8 @@ struct HomeView: View {
     @EnvironmentObject private var vm: HomeViewModel
     @State private var showPortfolio: Bool = false
     @State private var showPortfolioView: Bool = false
+    @State private var selectedCoin: Coin? = nil
+    @State private var showDetailView: Bool = false
 
     var body: some View {
         ZStack {
@@ -41,6 +43,9 @@ struct HomeView: View {
                 Spacer(minLength: 0)
             }
         }
+        .background(
+            NavigationLink(destination: DetailLoadingView(coin: $selectedCoin), isActive: $showDetailView, label: { EmptyView() })
+        )
         .sheet(isPresented: $showPortfolioView) {
             PortfolioView()
                 .environmentObject(vm)
@@ -48,7 +53,8 @@ struct HomeView: View {
     }
 }
 
-struct HomeView_Previews: PreviewProvider {
+
+ struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             HomeView()
@@ -56,7 +62,7 @@ struct HomeView_Previews: PreviewProvider {
         .navigationBarHidden(true)
         .environmentObject(dev.homeVM)
     }
-}
+ }
 
 extension HomeView {
     private var homeHeader: some View {
@@ -93,9 +99,15 @@ extension HomeView {
                 CoinRowView(coin: coin,
                             showHoldingsColumn: false)
                     .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 10))
+                    .onTapGesture { segue(coin: coin) }
             }
         }
         .listStyle(.plain)
+    }
+
+    private func segue(coin: Coin) {
+        self.selectedCoin = coin
+        self.showDetailView = true
     }
 
     private var portfolioCoinsList: some View {
@@ -104,6 +116,7 @@ extension HomeView {
                 CoinRowView(coin: coin,
                             showHoldingsColumn: true)
                     .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 10))
+                    .onTapGesture { segue(coin: coin) }
             }
         }
         .listStyle(.plain)
