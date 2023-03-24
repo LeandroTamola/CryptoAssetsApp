@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct CryptoPortfolioAppApp: App {
     @StateObject private var viewModel = HomeViewModel()
+    @State private var showLaunchView: Bool = true
 
     init() {
         UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor(Color.theme.accent)]
@@ -18,11 +19,21 @@ struct CryptoPortfolioAppApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationView {
-                HomeView()
-                    .navigationBarHidden(true)
+            ZStack {
+                NavigationStack {
+                    HomeView()
+                        .navigationBarHidden(true)
+                }
+                .environmentObject(viewModel)
+            
+                ZStack {
+                    if showLaunchView {
+                        LaunchView(showLaunchView: $showLaunchView)
+                            .transition(.move(edge: .leading))
+                    }
+                }
+                .zIndex(2.0)
             }
-            .environmentObject(viewModel)
         }
     }
 }

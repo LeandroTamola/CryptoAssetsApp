@@ -10,9 +10,10 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject private var vm: HomeViewModel
     @State private var showPortfolio: Bool = false
-    @State private var showPortfolioView: Bool = false
+    @State private var showPortfolioSheet: Bool = false
     @State private var selectedCoin: Coin? = nil
     @State private var showDetailView: Bool = false
+    @State private var showSettingsSheet: Bool = false
 
     var body: some View {
         ZStack {
@@ -46,9 +47,12 @@ struct HomeView: View {
         .background(
             NavigationLink(destination: DetailLoadingView(coin: $selectedCoin), isActive: $showDetailView, label: { EmptyView() })
         )
-        .sheet(isPresented: $showPortfolioView) {
+        .sheet(isPresented: $showPortfolioSheet) {
             PortfolioView()
                 .environmentObject(vm)
+        }
+        .sheet(isPresented: $showSettingsSheet) {
+            SettingsView()
         }
     }
 }
@@ -56,7 +60,7 @@ struct HomeView: View {
 
  struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
+        NavigationStack {
             HomeView()
         }
         .navigationBarHidden(true)
@@ -70,7 +74,9 @@ extension HomeView {
             CircleButtonView(iconName: showPortfolio ? "plus" : "info")
                 .onTapGesture {
                     if showPortfolio {
-                        self.showPortfolioView.toggle()
+                        self.showPortfolioSheet.toggle()
+                    } else {
+                        self.showSettingsSheet.toggle()
                     }
                 }
                 .background(

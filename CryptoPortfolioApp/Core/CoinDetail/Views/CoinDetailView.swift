@@ -56,7 +56,7 @@ struct CoinDetailView: View {
 
 struct CoinDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
+        NavigationStack {
             DetailLoadingView(coin: .constant(dev.coin))
                 .navigationBarTitleDisplayMode(.inline)
         }

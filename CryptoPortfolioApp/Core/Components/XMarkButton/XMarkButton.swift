@@ -12,7 +12,7 @@ struct XMarkButton: View {
 
     var body: some View {
         Button {
-            dismissSheet()
+            dismissSheet.callAsFunction()
         } label: {
             Image(systemName: "xmark")
         }
